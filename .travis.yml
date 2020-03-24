@@ -13,19 +13,25 @@ go:
 matrix:
   include:
     - os: osx
+      before_install:
+        - GO111MODULE=on go get github.com/ipfs/ipfs-update
+        - ipfs-update install v0.4.21
       install:
         - go get -d -t -v ./...
         - go test ./...
         - go build
     - os: linux
       before_install:
-        - mkdir temp && curl https://dist.ipfs.io/go-ipfs/v0.4.23/go-ipfs_v0.4.23_linux-amd64.tar.gz | tar xzC temp && cd temp && cd *
-        - sudo ./install.sh
+        - GO111MODULE=on go get github.com/ipfs/ipfs-update
+        - ipfs-update install v0.4.21
       install:
         - go get -d -t -v ./...
         - go test ./...
         - go build
     - os: windows
+      before_install:
+        - GO111MODULE=on go get github.com/ipfs/ipfs-update
+        - ipfs-update install v0.4.21
       install:
         - go get -d -t -v ./...
         - go test ./...
