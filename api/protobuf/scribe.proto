@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package records;
+
+import "google/protobuf/timestamp.proto";
+
+/*
+    Comments are used to record a message history
+*/
+message Comment {
+    google.protobuf.Timestamp timestamp = 1;
+    string text = 2;
+}
+
+/*
+    Status is used to determine if experiments/samples have tagged processes, or if they have been announced via the message server
+*/
+enum Status {
+    UN_INITIALIZED = 0;
+    untagged = 1;
+    tagged = 2;
+    announced = 3;
+}
+
+/*
+    Project is used to group Runs, Libraries and Samples
+*/
+message Project {
+    string label = 2;                            // the label for this project
+    string CID = 3;                              // the IPFS content identifier for this project
+    map<string, string> Runs = 4;                // a map of Run labels to Run CIDs
+}
+
+/*
+    ProjectDatabase is used to organise Projects
+*/
+message ProjectDatabase {
+
+    map<string, Project> projects = 2;          // map of projects 
+    bool pin = 3;                               // bool to set if project database is pinned
+}
+
+/*
+    Run is used to describe a Nanopore sequencing run
+*/
+message Run {
+    google.protobuf.Timestamp created = 1;
+    string label = 2;                            // the label for this run
+    //string parentProjectLabel = 3;               // the label of the project that this run belongs to
+    string parentProjectCID = 4;                 // the CID of the project in the IPFS
+    repeated Comment history = 5;                // describes the history of the experiment
+    Status status = 6;                           // describes if untagged/tagged/announced
+    map<string, bool> tags = 7;                  // tagged services and their complete status (true=complete, false=incomplete)
+    repeated string requestOrder = 8;            // the order to send requests to the tagged services
+    string outputDirectory = 9;                  // where the experiment is stored
+    string fast5OutputDirectory = 10;             // where the experiment fast5 data is stored
+    string fastqOutputDirectory = 11;            // where the experiment fastq data is stored
+
+}
+
+/*
+    Sample is used to describe a biological sample which is being sequenced as part of a Run
+*/
+message Sample {
+    google.protobuf.Timestamp created = 1;
+    string label = 2;                            // the experiment or sample name
+    repeated Comment history = 3;                // describes the history of the experiment
+    Status status = 4;                           // describes if untagged/tagged/announced
+    map<string, bool> tags = 5;                  // tagged services and their complete status (true=complete, false=incomplete)
+    repeated string requestOrder = 6;            // the order to send requests to the tagged services
+    string parentExperiment = 7;
+    int32 barcode = 8;
+}
