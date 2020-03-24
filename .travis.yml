@@ -8,31 +8,13 @@ os:
 
 language: go
 go:
-  - 1.x
+  - 1.14.x
 
-matrix:
-  include:
-    - os: osx
-      before_install:
-        - GO111MODULE=on go get github.com/ipfs/ipfs-update
-        - ipfs-update install v0.4.21
-      install:
-        - go get -d -t -v ./...
-        - go test ./...
-        - go build
-    - os: linux
-      before_install:
-        - GO111MODULE=on go get github.com/ipfs/ipfs-update
-        - ipfs-update install v0.4.21
-      install:
-        - go get -d -t -v ./...
-        - go test ./...
-        - go build
-    - os: windows
-      before_install:
-        - GO111MODULE=on go get github.com/ipfs/ipfs-update
-        - ipfs-update install v0.4.21
-      install:
-        - go get -d -t -v ./...
-        - go test ./...
-        - go build
+before_install:
+  - GO111MODULE=on go get github.com/ipfs/ipfs-update
+  - ipfs-update install v0.4.21
+
+script:
+  - go get -d -t -v ./...
+  - go test ./...
+  - go build
